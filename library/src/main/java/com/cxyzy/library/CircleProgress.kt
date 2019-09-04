@@ -11,18 +11,18 @@ import kotlin.math.abs
 
 class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    val ANTI_ALIAS = true
-    val DEFAULT_SIZE = 150
-    val DEFAULT_START_ANGLE = 270
-    val DEFAULT_SWEEP_ANGLE = 360
-    val DEFAULT_ANIM_TIME = 1500
-    val DEFAULT_MAX_VALUE = 100
-    val DEFAULT_VALUE = 50
-    val DEFAULT_HINT_SIZE = 25
-    val DEFAULT_UNIT_SIZE = 30
-    val DEFAULT_VALUE_SIZE = 40
-    val DEFAULT_TEXT_SIZE = 30
-    val DEFAULT_ARC_WIDTH = 15
+    private val ANTI_ALIAS = true
+    private val DEFAULT_SIZE = 150
+    private val DEFAULT_START_ANGLE = 270
+    private val DEFAULT_SWEEP_ANGLE = 360
+    private val DEFAULT_ANIM_TIME = 1500
+    private val DEFAULT_MAX_VALUE = 100
+    private val DEFAULT_VALUE = 50
+    private val DEFAULT_HINT_SIZE = 25
+    private val DEFAULT_UNIT_SIZE = 30
+    private val DEFAULT_VALUE_SIZE = 40
+    private val DEFAULT_TEXT_SIZE = 30
+    private val DEFAULT_ARC_WIDTH = 15
 
     //默认大小
     private var mDefaultSize: Int = 0
