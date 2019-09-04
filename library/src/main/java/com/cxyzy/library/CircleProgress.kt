@@ -7,9 +7,22 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import kotlin.math.abs
 
 class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private lateinit var mContext: Context
+
+    val ANTI_ALIAS = true
+    val DEFAULT_SIZE = 150
+    val DEFAULT_START_ANGLE = 270
+    val DEFAULT_SWEEP_ANGLE = 360
+    val DEFAULT_ANIM_TIME = 1500
+    val DEFAULT_MAX_VALUE = 100
+    val DEFAULT_VALUE = 50
+    val DEFAULT_HINT_SIZE = 25
+    val DEFAULT_UNIT_SIZE = 30
+    val DEFAULT_VALUE_SIZE = 40
+    val DEFAULT_TEXT_SIZE = 30
+    val DEFAULT_ARC_WIDTH = 15
 
     //默认大小
     private var mDefaultSize: Int = 0
@@ -96,16 +109,15 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
         get() = mPrecision
         set(mPrecision) {
             this.mPrecision = mPrecision
-            mPrecisionFormat = Utils.getPrecisionFormat(mPrecision)
+            mPrecisionFormat = getPrecisionFormat(mPrecision)
         }
 
     init {
-        init(context, attrs)
+        init(attrs)
     }
 
-    private fun init(context: Context, attrs: AttributeSet) {
-        mContext = context
-        mDefaultSize = Utils.dipToPx(mContext, Constant.DEFAULT_SIZE.toFloat())
+    private fun init(attrs: AttributeSet) {
+        mDefaultSize = dipToPx(DEFAULT_SIZE.toFloat())
         mAnimator = ValueAnimator()
         mRectF = RectF()
         mCenterPoint = Point()
@@ -115,31 +127,31 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     private fun initAttrs(attrs: AttributeSet) {
-        val typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressBar)
         isAntiAlias =
-            typedArray.getBoolean(R.styleable.CircleProgressBar_antiAlias, Constant.ANTI_ALIAS)
+            typedArray.getBoolean(R.styleable.CircleProgressBar_antiAlias, ANTI_ALIAS)
         hint = typedArray.getString(R.styleable.CircleProgressBar_hint)
         mHintColor = typedArray.getColor(R.styleable.CircleProgressBar_hintColor, Color.BLACK)
         mHintSize = typedArray.getDimension(
-            R.styleable.CircleProgressBar_hintSize, Constant.DEFAULT_HINT_SIZE.toFloat()
+            R.styleable.CircleProgressBar_hintSize, DEFAULT_HINT_SIZE.toFloat()
         )
 
         mValue = typedArray.getFloat(
-            R.styleable.CircleProgressBar_value, Constant.DEFAULT_VALUE.toFloat()
+            R.styleable.CircleProgressBar_value, DEFAULT_VALUE.toFloat()
         )
         mPrecision = typedArray.getInt(R.styleable.CircleProgressBar_precision, 0)
-        mPrecisionFormat = Utils.getPrecisionFormat(mPrecision)
+        mPrecisionFormat = getPrecisionFormat(mPrecision)
         mValueColor = typedArray.getColor(R.styleable.CircleProgressBar_valueColor, Color.BLACK)
         mValueSize = typedArray.getDimension(
-            R.styleable.CircleProgressBar_valueSize, Constant.DEFAULT_VALUE_SIZE.toFloat()
+            R.styleable.CircleProgressBar_valueSize, DEFAULT_VALUE_SIZE.toFloat()
         )
 
         maxValue =
-            typedArray.getInt(R.styleable.CircleProgressBar_maxValue, Constant.DEFAULT_MAX_VALUE)
+            typedArray.getInt(R.styleable.CircleProgressBar_maxValue, DEFAULT_MAX_VALUE)
         mMaxAndMinColor =
             typedArray.getColor(R.styleable.CircleProgressBar_maxAndMinValueColor, Color.GRAY)
         mMaxAndMinSize = typedArray.getDimension(
-            R.styleable.CircleProgressBar_maxAndMinValueSize, Constant.DEFAULT_TEXT_SIZE.toFloat()
+            R.styleable.CircleProgressBar_maxAndMinValueSize, DEFAULT_TEXT_SIZE.toFloat()
         )
         mMaxAndMinXOffset =
             typedArray.getFloat(R.styleable.CircleProgressBar_maxAndMinXOffsetPercent, 0.70f)
@@ -149,28 +161,28 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
         unit = typedArray.getString(R.styleable.CircleProgressBar_unit)
         mUnitColor = typedArray.getColor(R.styleable.CircleProgressBar_unitColor, Color.BLACK)
         mUnitSize = typedArray.getDimension(
-            R.styleable.CircleProgressBar_unitSize, Constant.DEFAULT_UNIT_SIZE.toFloat()
+            R.styleable.CircleProgressBar_unitSize, DEFAULT_UNIT_SIZE.toFloat()
         )
 
         mArcWidth = typedArray.getDimension(
-            R.styleable.CircleProgressBar_arcWidth, Constant.DEFAULT_ARC_WIDTH.toFloat()
+            R.styleable.CircleProgressBar_arcWidth, DEFAULT_ARC_WIDTH.toFloat()
         )
         mStartAngle = typedArray.getFloat(
-            R.styleable.CircleProgressBar_startAngle, Constant.DEFAULT_START_ANGLE.toFloat()
+            R.styleable.CircleProgressBar_startAngle, DEFAULT_START_ANGLE.toFloat()
         )
         mSweepAngle = typedArray.getFloat(
-            R.styleable.CircleProgressBar_sweepAngle, Constant.DEFAULT_SWEEP_ANGLE.toFloat()
+            R.styleable.CircleProgressBar_sweepAngle, DEFAULT_SWEEP_ANGLE.toFloat()
         ) + 2
 
         mBgArcColor = typedArray.getColor(R.styleable.CircleProgressBar_bgArcColor, Color.WHITE)
         mBgArcWidth = typedArray.getDimension(
-            R.styleable.CircleProgressBar_bgArcWidth, Constant.DEFAULT_ARC_WIDTH.toFloat()
+            R.styleable.CircleProgressBar_bgArcWidth, DEFAULT_ARC_WIDTH.toFloat()
         )
         mTextOffsetPercentInRadius =
             typedArray.getFloat(R.styleable.CircleProgressBar_textOffsetPercentInRadius, 0.43f)
 
         animTime =
-            typedArray.getInt(R.styleable.CircleProgressBar_animTime, Constant.DEFAULT_ANIM_TIME)
+            typedArray.getInt(R.styleable.CircleProgressBar_animTime, DEFAULT_ANIM_TIME)
                 .toLong()
 
         val gradientArcColors = typedArray.getResourceId(R.styleable.CircleProgressBar_arcColors, 0)
@@ -182,7 +194,7 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
              */
             when {
                 gradientColors.isEmpty() -> {
-                    val color = ContextCompat.getColor(mContext, gradientArcColors)
+                    val color = ContextCompat.getColor(context, gradientArcColors)
                     mGradientColors = IntArray(2)
                     mGradientColors[0] = color
                     mGradientColors[1] = color
@@ -262,8 +274,8 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(
-            Utils.measure(widthMeasureSpec, mDefaultSize),
-            Utils.measure(heightMeasureSpec, mDefaultSize)
+            internalMeasure(widthMeasureSpec, mDefaultSize),
+            internalMeasure(heightMeasureSpec, mDefaultSize)
         )
 
     }
@@ -384,7 +396,7 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     private fun getBaselineOffsetFromY(paint: Paint): Float {
-        return Utils.measureTextHeight(paint) / 2
+        return measureTextHeight(paint) / 2
     }
 
     fun setmGradientColors(mGradientColors: IntArray) {
@@ -396,5 +408,53 @@ class CircleProgress(context: Context, attrs: AttributeSet) : View(context, attr
         return mGradientColors
     }
 
+
+    /**
+     * 测量 view
+     * @param measureSpec
+     * @param defaultSize View的默认大小
+     * @return
+     */
+    private fun internalMeasure(measureSpec: Int, defaultSize: Int): Int {
+        var result = defaultSize
+        val specMode = MeasureSpec.getMode(measureSpec)
+        val specSize = MeasureSpec.getSize(measureSpec)
+        if (specMode == MeasureSpec.EXACTLY) {
+            result = specSize
+        } else if (specMode == MeasureSpec.AT_MOST) {
+            result = result.coerceAtMost(specSize)
+        }
+        return result
+    }
+
+    /**
+     * dp 转 px
+     * @param context
+     * @param dip
+     * @return
+     */
+    private fun dipToPx(dip: Float): Int {
+        val density = context.resources.displayMetrics.density
+        return (dip * density + 0.5f * if (dip >= 0) 1 else -1).toInt()
+    }
+
+
+    /**
+     * 获取数值精度格式化字符串
+     * @param precision
+     * @return
+     */
+    private fun getPrecisionFormat(precision: Int): String {
+        return "%." + precision + "f"
+    }
+
+
+    /**
+     * 测量文字高度
+     */
+    private fun measureTextHeight(paint: Paint): Float {
+        val fontMetrics = paint.fontMetrics
+        return abs(fontMetrics.ascent) + fontMetrics.descent
+    }
 
 }
