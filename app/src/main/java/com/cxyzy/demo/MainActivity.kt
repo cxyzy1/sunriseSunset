@@ -9,8 +9,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        circleProgress.value = 50f
-//        circleProgress.hint = "dddd"
+//        circleProgress.value = 50f
+        circleProgress.startAnimation()
     }
 
 }

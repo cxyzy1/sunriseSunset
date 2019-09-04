@@ -41,7 +41,7 @@
             app:startAngle="135"
             app:sweepAngle="270"
             app:textOffsetPercentInRadius="0"
-            app:value="70"
+            app:value="90"
             app:valueColor="#ffffff"
             app:valueSize="34sp" />
 
