@@ -21,10 +21,6 @@ import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-/**
- * Created by wyg on 2017/8/3.
- */
-
 public class SunriseSunset extends View {
     private Context mContext;
     private static final float DEFAULT_SIZE = 300f;
@@ -108,8 +104,6 @@ public class SunriseSunset extends View {
         mTimePaint.setColor(timeTextColor);
         mTimePaint.setTextSize(timeTextSize);
         mTimePaint.setTextAlign(Paint.Align.CENTER);
-
-
     }
 
     @Override
@@ -167,8 +161,6 @@ public class SunriseSunset extends View {
         canvas.drawArc(mRectF, STARTANGLE + nowAngle, sweepAngle - nowAngle, false, mArcPaint);//弧
         canvas.drawLine(0, lineYLocate, width, lineYLocate, mArcPaint);//线
         canvas.drawArc(mRectF, STARTANGLE, nowAngle - 3.5f, false, mSunPaint);//留出3度让小太阳背景空白
-
-
     }
 
     public void startAnimation() {
@@ -207,8 +199,6 @@ public class SunriseSunset extends View {
     public void setPercent(float percent) {
         this.percent = percent;
         invalidate();
-
-
     }
 
     private int transToMinuteTime(String time) {//"00:00"
