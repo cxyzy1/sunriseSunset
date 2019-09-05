@@ -9,11 +9,10 @@ import android.view.animation.LinearInterpolator
 import java.lang.Math.PI
 import java.lang.Math.sin
 
-class SunriseSunset @JvmOverloads constructor(
+class SunriseSunset constructor(
     private val mContext: Context,
-    attrs: AttributeSet,
-    defStyleAttr: Int = 0
-) : View(mContext, attrs, defStyleAttr) {
+    attrs: AttributeSet
+) : View(mContext, attrs) {
     private val DEFAULT_SIZE = 300f
     private val mDefaultSize: Int
     private val sweepAngle = 140
