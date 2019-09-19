@@ -1,4 +1,4 @@
-package com.cxyzy.library
+package com.cxyzy.lib.ui.sunrise
 
 import android.animation.ObjectAnimator
 import android.content.Context

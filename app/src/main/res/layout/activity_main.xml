@@ -22,7 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.cxyzy.library.SunriseSunset
+        <com.cxyzy.lib.ui.sunrise.SunriseSunset
             android:id="@+id/sunriseSunset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
